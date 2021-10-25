@@ -25,44 +25,6 @@
     </div>
 
     <!-- Javascript -->
-    <script> 
-      $(document).ready(function() {
-        let model = {};
-      
-        //Sets the model to its initial state
-        function initializeModel() {
-          model.error = "";
-        }
-      
-        //Updates the view to display json data
-        function updateView() {
-          if (model.error != "") { $("#response").text(model.error); }
-        }
-      
-        //Sends a ajax request to the server
-        function sendRequest(url, callback) {
-          
-          let jqxhr = $.get(url);
-          jqxhr.done(function(json) {
-            if (json.error !== undefined) {
-              model.error = json.error;
-            }
-            else {
-              if (callback !== undefined) { callback(); }
-            }
-            updateView();  
-          });
-  
-          jqxhr.fail(function(json) {
-            let error = JSON.stringify(json);
-            model.error = error;
-            updateView();
-          });
-        }
-
-        //Once everything is done initialize the model
-        initializeModel();
-      });
-    </script>
+    <script src="scripts.js"></script>
   </body>
 </html>
