@@ -37,7 +37,6 @@ const sessionOptions = {
 app.use(session(sessionOptions));
 
 // Apply App Settings
-app.use(session(sessionOptions));
 app.get("/", serveIndex);
 app.get("/register", register);
 app.get("/login", login);
@@ -45,6 +44,7 @@ app.get("/logout", logout);
 app.get("/whoIsLoggedIn", whoIsLoggedIn);
 app.get("/fetchAnimals", fetchAnimals);
 app.get("/fetchWaypoints", fetchWaypoints);
+app.get("/addWaypoint", addWaypoint);
 app.listen(port, "localhost", startHandler());
 app.use(express.static(__dirname));
 
@@ -351,6 +351,12 @@ function fetchWaypoints(req, res) {
     let lng = req.query.longitude;
     let range = req.query.range;
 
+    //Ensure the user is logged in
+    if (!req.session.user) {
+      writeResult(res, {'error' : "You must be logged in to use this feature."});
+      return;
+    }
+
     // Validity check for latitude
     if (!lat || isNaN(lat)) {
       writeResult(res, {'error' : "You must provide a numeric latitude."});
@@ -369,7 +375,7 @@ function fetchWaypoints(req, res) {
 
     // Validity check for longitude
     if (!range || isNaN(range)) {
-      writeResult(res, {'error' : "You must provide a range in miles."});
+      writeResult(res, {'error' : "You must provide a search range (miles)."});
       return;
     }
 
@@ -384,9 +390,9 @@ function fetchWaypoints(req, res) {
         ST_X(Coordinate) AS 'Latitude',
         ST_Y(Coordinate) AS 'Longitude',
         Datestamp As 'Date'
-      FROM Locations
-      JOIN Animals ON Animals.Id = Locations.AnimalId
-      JOIN Users ON Users.Id = Locations.UserId
+      FROM Waypoints
+      JOIN Animals ON Animals.Id = Waypoints.AnimalId
+      JOIN Users ON Users.Id = Waypoints.UserId
       WHERE ABS(ST_X(Coordinate) - ${lat}) <= ${latitudeToMiles * range}
         AND ABS(ST_Y(Coordinate) - ${lng}) <= ${longitudeToMiles * range}
     `;
@@ -417,6 +423,81 @@ function fetchWaypoints(req, res) {
             }
 
             writeResult(res, { 'animals': results }); 
+          }
+          else { writeResult(res, { 'error': err.message}); }
+        });
+      }
+      else { writeResult(res, {'error' : err}); }
+    });      
+  }
+
+  // Error Handling
+  catch (e) {
+    writeResult(res, handleError(e));
+  }
+}
+
+/**
+ * Adds a location to the database
+ * Usage: /addWaypoint?latitude=0&longitude=0
+ * req - The request
+ * res - The response
+ ********************************************************************************/
+function addWaypoint(req, res) {
+  try {
+    let con = mysql.createConnection(conInfo);
+    let lat = req.query.latitude;
+    let lng = req.query.longitude;
+    let animal = req.query.animal;
+
+    //Ensure the user is logged in
+    if (!req.session.user || !req.session.user.username) {
+      writeResult(res, {'error' : "You must be logged in to use this feature."});
+      return;
+    }
+
+    // Validity check for latitude
+    if (!lat || isNaN(lat)) {
+      writeResult(res, {'error' : "You must provide a numeric latitude."});
+      return;
+    }
+
+    lat = parseFloat(lat);
+
+    // Validity check for longitude
+    if (!lng || isNaN(lng)) {
+      writeResult(res, {'error' : "You must provide a numeric longitude."});
+      return;
+    }
+
+    lng = parseFloat(lng);
+
+    // Validity check for longitude
+    if (!animal || animal.length == 0) {
+      writeResult(res, {'error' : "You must provide an animal."});
+      return;
+    }
+
+    // Query Variables
+    let sql = `
+      INSERT INTO Waypoints(UserId, AnimalId, Coordinate, Datestamp)
+      VALUES (
+        (SELECT Id FROM Users WHERE Username = ?),
+        (SELECT Id FROM Animals WHERE Name = ?),
+        Point(${lat}, ${lng}),
+        CURRENT_DATE()
+      )
+    `;
+    let placeholders = [req.session.user.username, animal];
+
+    // Connect to the database
+    con.connect(function(err) {
+
+      // Queries the database
+      if (!err) {
+        con.query(sql, placeholders, function (err, result, fields) {
+          if (!err)  {
+            writeResult(res, { 'success': "Added waypoint."});
           }
           else { writeResult(res, { 'error': err.message}); }
         });
