@@ -26,7 +26,6 @@ const passwordRegEx = /(?=.*\d)(?=.*[!@#$])(?=.*[A-Z])(?=.{8,})/;
 // Converstions: Latitude and Longitude to mile
 const latitudeToMiles = 1.0 / 69.0;
 const longitudeToMiles = 1.0 / 54.6;
-const waypointRange = 5;
 
 //Session
 const sessionOptions = {
@@ -86,6 +85,7 @@ function handleError(e){
 
 /**
  * User Login
+ * Usage: /login?username=""&password=""
  * req - The request
  * res - The response
  ********************************************************************************/
@@ -120,6 +120,7 @@ function logout(req, res) {
 
 /**
  * User Registration
+ * Usage: /login?username=""&email=""&password=""
  * req - The request
  * res - The response
  ********************************************************************************/
@@ -292,6 +293,7 @@ function buildUser(dbObject) {
 
 /**
  * Fetches the animals within the database
+ * Usage: /fetchAnimals
  * req - The request
  * res - The response
  ********************************************************************************/
@@ -338,6 +340,7 @@ function fetchAnimals(req, res) {
 
 /**
  * Fetches the locations within the database
+ * Usage: /fetchWaypoints?latitude=0&email=""&longitude=0&range=0
  * req - The request
  * res - The response
  ********************************************************************************/
@@ -346,6 +349,7 @@ function fetchWaypoints(req, res) {
     let con = mysql.createConnection(conInfo);
     let lat = req.query.latitude;
     let lng = req.query.longitude;
+    let range = req.query.range;
 
     // Validity check for latitude
     if (!lat || isNaN(lat)) {
@@ -363,6 +367,14 @@ function fetchWaypoints(req, res) {
 
     lng = parseFloat(lng);
 
+    // Validity check for longitude
+    if (!range || isNaN(range)) {
+      writeResult(res, {'error' : "You must provide a range in miles."});
+      return;
+    }
+
+    range = parseFloat(range);
+
     // Query Variables
     let sql = `
       SELECT
@@ -375,8 +387,8 @@ function fetchWaypoints(req, res) {
       FROM Locations
       JOIN Animals ON Animals.Id = Locations.AnimalId
       JOIN Users ON Users.Id = Locations.UserId
-      WHERE ABS(ST_X(Coordinate) - ${lat}) <= ${latitudeToMiles * waypointRange}
-        AND ABS(ST_Y(Coordinate) - ${lng}) <= ${longitudeToMiles * waypointRange}
+      WHERE ABS(ST_X(Coordinate) - ${lat}) <= ${latitudeToMiles * range}
+        AND ABS(ST_Y(Coordinate) - ${lng}) <= ${longitudeToMiles * range}
     `;
     let placeholders = [];
 
