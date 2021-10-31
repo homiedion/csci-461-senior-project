@@ -351,12 +351,6 @@ function fetchWaypoints(req, res) {
     let lng = req.query.longitude;
     let range = req.query.range;
 
-    //Ensure the user is logged in
-    if (!req.session.user) {
-      writeResult(res, {'error' : "You must be logged in to use this feature."});
-      return;
-    }
-
     // Validity check for latitude
     if (!lat || isNaN(lat)) {
       writeResult(res, {'error' : "You must provide a numeric latitude."});
