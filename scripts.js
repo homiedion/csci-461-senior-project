@@ -48,9 +48,9 @@ $(document).ready(function() {
     //Send the request
     jqxhr.done(function(json) {
       model.error = "";
-      if(json.error != undefined) { model.error = json.error; }
-      if(json.user != undefined) { model.user = json.user; }
-      if(callback != undefined) { callback(); }
+      if(json.error !== undefined) { model.error = json.error; }
+      if(json.user !== undefined) { model.user = json.user; }
+      if(callback !== undefined) { callback(); }
       updateView();
     });
 
