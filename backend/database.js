@@ -35,7 +35,7 @@ class Database {
    ********************************************************************************/
   fetchAnimals() {
     return new Promise((resolve, reject) => {
-      
+
       let sql = `
         SELECT Id, Name, Icon
         FROM Animals
@@ -46,7 +46,7 @@ class Database {
         .then(results => {
 
           let animals = [];
-            
+
           for(let i = 0; i < results.length; i++) {
             animals.push({
               "Id" : results[i].Id,
@@ -71,7 +71,7 @@ class Database {
  ********************************************************************************/
   fetchWaypoints(req) {
     return new Promise((resolve, reject) => {
-      
+
       let lat = req.query.latitude;
       let lng = req.query.longitude;
       let range = req.query.range;
@@ -119,7 +119,7 @@ class Database {
         .then(results => {
 
           let waypoints = [];
-            
+
           for(let i = 0; i < results.length; i++) {
             waypoints.push({
               "User" : results[i].User,
@@ -133,7 +133,6 @@ class Database {
               }
             });
           }
-
           resolve({'waypoints': waypoints});
         })
         .catch(error => reject(error.sqlMessage));

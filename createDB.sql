@@ -49,10 +49,10 @@ CREATE TABLE Waypoints (
 -- TODO: Remove test data one appropriate
 -- Users will be able to submit locations
 INSERT INTO Waypoints(UserId, AnimalId, Coordinate, Datestamp) VALUES
-((SELECT Id FROM Users WHERE Username = "Test"), (SELECT Id FROM Animals WHERE Name = "Bear"), Point(42.463451, -73.300125), DATE_SUB(CURRENT_DATE(), INTERVAL 15 DAY)),
-((SELECT Id FROM Users WHERE Username = "Test"), (SELECT Id FROM Animals WHERE Name = "Rabbit"), Point(42.463617, -73.300807), DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY)),
-((SELECT Id FROM Users WHERE Username = "Test"), (SELECT Id FROM Animals WHERE Name = "Cat"), Point(42.463455, -72.299476), CURRENT_DATE()),
-((SELECT Id FROM Users WHERE Username = "Test"), (SELECT Id FROM Animals WHERE Name = "Bear"), Point(41.462928, -73.297000), CURRENT_DATE())
+((SELECT Id FROM Users WHERE Username = "Test"), (SELECT Id FROM Animals WHERE Name = "Bear"), Point(42.661804, -73.152981), DATE_SUB(CURRENT_DATE(), INTERVAL 15 DAY)),
+((SELECT Id FROM Users WHERE Username = "Test"), (SELECT Id FROM Animals WHERE Name = "Rabbit"), Point(42.708520, -73.1070), DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY)),
+((SELECT Id FROM Users WHERE Username = "Test"), (SELECT Id FROM Animals WHERE Name = "Cat"), Point(42.691801, -73.106160), CURRENT_DATE()),
+((SELECT Id FROM Users WHERE Username = "Test"), (SELECT Id FROM Animals WHERE Name = "Bear"), Point(42.680878, -73.113681), CURRENT_DATE())
 ;
 
 -- Creates the event to remove old data

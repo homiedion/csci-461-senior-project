@@ -8,7 +8,7 @@
 
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" type="text/css">
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" type="text/css"> -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.9.0/css/ol.css" type="text/css">
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
@@ -41,7 +41,7 @@
           </li>
 
           <!-- Map -->
-          <li class="nav-item" id="mapButton">
+          <li class="nav-item" id="map-button">
             <a class="nav-link" href="#">Map</a>
           </li>
         </ul>
@@ -49,8 +49,8 @@
         <!-- User Elements -->
         <ul class="navbar-nav ml-auto">
           <!-- Register -->
-          <li class="nav-item unauthenticated-element" id="mapButton">
-            <a class="nav-link" href="#" data-toggle="modal" href="#registerModal" data-target="#registerModal" id="register">Register</a>
+          <li class="nav-item unauthenticated-element" id="map-button">
+            <a class="nav-link" href="#" data-toggle="modal" href="#register-modal" data-target="#register-modal" id="register">Register</a>
           </li>
 
           <!-- Login -->
@@ -61,15 +61,16 @@
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
               <form class="px-4 py-3">
                 <div class="form-group">
-                  <label for="loginUsername">Username</label>
-                  <input type="email" class="form-control" id="loginUsername" placeholder="Username">
+                  <label for="login-username">Username</label>
+                  <input type="email" class="form-control" id="login-username" placeholder="Username">
                 </div>
                 <div class="form-group">
-                  <label for="loginPassword">Password</label>
-                  <input type="password" class="form-control" id="loginPassword" placeholder="Password">
+                  <label for="login-password">Password</label>
+                  <input type="password" class="form-control" id="login-password" placeholder="Password">
                 </div>
                 <button type="button" class="btn btn-primary" id="login">Sign In</button>
               </form>
+              <pre id="login-error"></pre>
             </div>
           </li>
 
@@ -82,11 +83,11 @@
     </nav>
 
     <!-- Register Modal -->
-    <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+    <div class="modal fade" id="register-modal" tabindex="-1" aria-labelledby="register-modal-label" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="registerModalLabel">Register</h5>
+            <h5 class="modal-title" id="register-modal-label">Register</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -94,19 +95,19 @@
           <div class="modal-body bg-dark text-white">
             <form>
               <div class="form-group">
-                <input type="text" class="form-control" id="registerEmail" name="registerEmail" placeholder="Email">
+                <input type="text" class="form-control" id="register-email" name="register-email" placeholder="Email">
               </div>
               <div class="form-group">
-                <input type="text" class="form-control" id="registerUsername" name="registerUsername" placeholder="Username">
+                <input type="text" class="form-control" id="register-username" name="register-username" placeholder="Username">
               </div>
               <div class="form-group">
-                <input type="password" class="form-control" id="registerPassword" name="registerPassword" placeholder="Password">
+                <input type="password" class="form-control" id="register-password" name="register-password" placeholder="Password">
               </div>
             </form>
-            <pre id="registerError"></pre>
+            <pre id="register-error"></pre>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary" id="registerButton">Register</button>
+            <button type="button" class="btn btn-primary" id="register-button">Register</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
           </div>
         </div>
@@ -118,7 +119,8 @@
 
     <div id="popup" class="ol-popup">
         <a href="#" id="popup-closer" class="ol-popup-closer"></a>
-        <div id="popup-content"></div>
+        <div id="popup-content">
+        </div>
     </div>
 
     <!-- Errors -->

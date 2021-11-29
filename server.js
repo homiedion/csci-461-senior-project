@@ -102,7 +102,7 @@ function fetchWaypoints(req, res) {
 }
 
 /**
- * Logs a user 
+ * Logs a user
  * Expects the following request parameters:
  *  • username
  *  • password
