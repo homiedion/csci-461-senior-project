@@ -18,5 +18,14 @@ Registered users can create and view waypoints on the map. These waypoints mark 
 
 ## Planned Features
 
+### Animal Filtering
+Users will be able to filter the displayed waypointed based on the animal type.
+
 ### User Profile
-The user will have a profile which they can use to edit their own personal settings and manage any waypoints that they have made.
+Users will have a profile that allows them to edit their account settings and manage waypoints they have made.
+
+### Email Confirmation
+Potential Users will recieve an email address when they sign up. To complete the registration process the user will have to input a code sent to their email address.
+
+### Waypoint Ratings
+Users will be able to upvote or downvote a waypoint based on whether or not they saw it. Using either will modify the remaining time left on the waypoint. Each user can only vote once per waypoint.
