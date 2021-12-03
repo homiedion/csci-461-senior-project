@@ -33,12 +33,44 @@ class Database {
   /**
    * Fetches the animal types stored within the database.
    ********************************************************************************/
+  fetchSecurityQuestions() {
+    return new Promise((resolve, reject) => {
+
+      let sql = `
+        SELECT Id, Question
+        FROM SecurityQuestions
+        ORDER BY Question
+      `;
+      let args = [];
+
+      this.query(sql, args)
+        .then(results => {
+
+          let questions = [];
+
+          for(let i = 0; i < results.length; i++) {
+            questions.push({
+              "Id" : results[i].Id,
+              "Question" : results[i].Question
+            });
+          }
+
+          resolve({'securityQuestions': questions});
+        })
+        .catch(error => reject(error.sqlMessage));
+    });
+  }
+
+  /**
+   * Fetches the animal types stored within the database.
+   ********************************************************************************/
   fetchAnimals() {
     return new Promise((resolve, reject) => {
 
       let sql = `
         SELECT Id, Name, Icon
         FROM Animals
+        ORDER BY Name
       `;
       let args = [];
 
@@ -62,13 +94,13 @@ class Database {
   }
 
   /**
- * Fetches the waypoints from the database
- * Expects the following request parameters:
- *  • latitude
- *  • longitude
- *  • range
- * req - The request from the client.
- ********************************************************************************/
+   * Fetches the waypoints from the database
+   * Expects the following request parameters:
+   *  • latitude
+   *  • longitude
+   *  • range
+   * req - The request from the client.
+   ********************************************************************************/
   fetchWaypoints(req) {
     return new Promise((resolve, reject) => {
 

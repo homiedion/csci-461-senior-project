@@ -14,7 +14,7 @@ const database = new Database({
     user: "root",
     password: "",
     database: "FluffleDB"
-});
+  });
 const users = new User(database);
 
 // Server Port
@@ -32,10 +32,13 @@ app.use(session(sessionOptions));
 // Apply App Settings
 app.get("/", serveIndex);
 app.get("/fetchAnimals", fetchAnimals);
+app.get("/fetchSecurityQuestions", fetchSecurityQuestions);
+app.get("/fetchUserSecurityQuestions", fetchUserSecurityQuestions);
 app.get("/fetchWaypoints", fetchWaypoints);
 app.get("/login", login);
 app.get("/logout", logout);
 app.get("/register", register);
+app.get("/resetPassword", resetPassword);
 app.get("/whoIsLoggedIn", whoIsLoggedIn);
 app.listen(port, "localhost", startHandler());
 app.use(express.static(__dirname));
@@ -87,6 +90,30 @@ function fetchAnimals(req, res) {
 }
 
 /**
+ * Fetches the security questions from the database
+ * req - The request from the client.
+ * res - The response to the client.
+ ********************************************************************************/
+function fetchSecurityQuestions(req, res) {
+  database.fetchSecurityQuestions(req)
+    .then( result => writeResult(res, result) )
+    .catch( error => writeError(res, error) );
+}
+
+/**
+ * Fetches a user's security questions from the database
+  * Expects the following request parameters:
+ *  • username
+ * req - The request from the client.
+ * res - The response to the client.
+ ********************************************************************************/
+function fetchUserSecurityQuestions(req, res) {
+  users.fetchUserSecurityQuestions(req)
+    .then( result => writeResult(res, result) )
+    .catch( error => writeError(res, error) );
+}
+
+/**
  * Fetches the animal types from the database
  * Expects the following request parameters:
  *  • latitude
@@ -132,11 +159,29 @@ function logout(req, res) {
  *  • username
  *  • email
  *  • password
+ *  • questions - Use array notation ?questions[]=1&questions[]=2
+ *  • answers - Use array notation ?answers[]=Answer One&answers[]=Answer Two
  * req - The request from the client.
  * res - The response to the client.
  ********************************************************************************/
 function register(req, res) {
   users.register(req)
+    .then( result => writeResult(res, result) )
+    .catch( error => writeError(res, error) );
+}
+
+/**
+ * Resets the password of an existing user.
+ * Expects the following request parameters:
+ *  • username
+ *  • password
+ *  • questions - Use array notation ?questions[]=1&questions[]=2
+ *  • answers - Use array notation ?answers[]=Answer One&answers[]=Answer Two
+ * req - The request from the client.
+ * res - The response to the client.
+ ********************************************************************************/
+function resetPassword(req, res) {
+  users.resetPassword(req)
     .then( result => writeResult(res, result) )
     .catch( error => writeError(res, error) );
 }

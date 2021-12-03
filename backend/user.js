@@ -63,6 +63,8 @@ class User {
    *  • username
    *  • email
    *  • password
+   *  • questions - Use array notation ?questions[]=1&questions[]=2
+   *  • answers - Use array notation ?answers[]=Answer One&answers[]=Answer Two
    * req - The request from the client.
    ********************************************************************************/
   register(req) {
@@ -72,10 +74,12 @@ class User {
       let username = this.getString(req.query.username);
       let password = this.getString(req.query.password);
       let email = this.getString(req.query.email);
+      let questions = req.query.questions;
+      let answers = req.query.answers;
 
       // Username Validation
       if (!this.isValidUsername(username)) {
-        reject("You must provide a valid user name.");
+        reject("You must provide a valid username.");
         return;
       }
 
@@ -91,12 +95,56 @@ class User {
         return;
       }
 
+      //Question validation
+      if (!questions || questions.length < 2) {
+        reject("You must select two security questions to register an account.");
+        return;
+      }
+
+      for(let i = 0; i < questions.length; i++) {
+        // Cast to integer
+        questions[i] = this.getInt(questions[i]);
+
+        // Ensure valid value is provided.
+        if (questions[i] <= 0) {
+          reject(`Question ${i} must be a positive integer`);
+          return;
+        }
+      }
+
+      if (questions[0] === questions[1]) {
+        reject(`You must select two different security questions.`);
+        return;
+      }
+
+      // Answer validation
+      if (!answers || answers.length < 2) {
+        reject("You must answer two security questions to register an account.");
+        return;
+      }
+
+      for(let i = 0; i < answers.length; i++) {
+        answers[i] = this.getString(answers[i]);
+
+        // Ensure valid value is provided.
+        if (!answers[i] || answers[i].length === 0) {
+          reject(`Answer ${i} must be a valid`);
+          return;
+        }
+
+        //Encrypt
+        answers[i] = bcrypt.hashSync(answers[i], 12);
+      }
+
       //Generate the password's hash
-      let hash = bcrypt.hashSync(password, 12);
+      let passwordHash = bcrypt.hashSync(password, 12);
 
       // Query Variables
-      let sql = 'INSERT INTO Users (Username, Email, PasswordHash) VALUES (?, ?, ?)';
-      let args = [username, email, hash];
+      let sql = `
+        INSERT INTO Users (Username, Email, PasswordHash, SecurityQuestionOne, SecurityQuestionTwo, SecurityAnswerHashOne, SecurityAnswerHashTwo)
+         VALUES (?, ?, ?, ?, ?, ?, ?);
+      `;
+      let args = [username, email, passwordHash, questions[0], questions[1], answers[0], answers[1]];
 
       //Query the database
       this.database.query(sql, args)
@@ -138,6 +186,16 @@ class User {
   getString(variable) {
     if (!variable) { return undefined; }
     return String(variable).trim();
+  }
+
+  /**
+   * Returns a int from value provided
+   * variable - The variable being formatted
+   ********************************************************************************/
+  getInt(variable) {
+    if (!variable) { return 0; }
+    if (isNaN(variable)) { return 0; }
+    return parseInt(String(variable).trim());
   }
 
   /**
@@ -183,6 +241,7 @@ class User {
 
   /**
    * Attempts to log the user in with the provided query parameters.
+   * req - The request
    * username - The username
    * password - The password
    ********************************************************************************/
@@ -219,6 +278,130 @@ class User {
           }
         })
         .catch(error => reject(error.sqlMessage));
+    });
+  }
+
+  /**
+   * Fetches a user's security questions from the database
+   * Expects the following request parameters:
+   *  • username
+   * req - The request from the client.
+   ********************************************************************************/
+  fetchUserSecurityQuestions(req) {
+    return new Promise((resolve, reject) => {
+
+      // Variables
+      let username = this.getString(req.query.username);
+
+      // Username Validation
+      if (!this.isValidUsername(username)) {
+        reject("You must provide a valid username.");
+        return;
+      }
+
+      // SQL Variables
+      let sql = `
+        SELECT
+          A.Question AS 'QuestionOne',
+          B.Question AS 'QuestionTwo'
+        FROM Users
+        LEFT JOIN SecurityQuestions A ON Users.SecurityQuestionOne = A.Id
+        LEFT JOIN SecurityQuestions B ON Users.SecurityQuestionTwo = B.Id
+        WHERE username = ?
+      `;
+      let args = [username];
+
+      this.database.query(sql, args)
+        .then(results => {
+
+          // Failed to find match
+          if (results.length === 0) {
+            reject("Failed to find security questions for this user.");
+            return;
+          }
+
+          // Success
+          resolve({'userQuestions': [results[0].QuestionOne, results[0].QuestionTwo]});
+        })
+        .catch(error => reject(error.sqlMessage));
+    });
+  }
+
+  /**
+   * Registers a new user in the database
+   * Expects the following request parameters:
+   *  • username
+   *  • password
+   *  • answers - Use array notation ?questions[]=1&questions[]=2
+   * req - The request from the client.
+   ********************************************************************************/
+  resetPassword(req) {
+    return new Promise((resolve, reject) => {
+
+      // Variables
+      let username = this.getString(req.query.username);
+      let password = this.getString(req.query.password);
+      let answers = req.query.answers;
+
+
+      // Username Validation
+      if (!this.isValidUsername(username)) {
+        reject("You must provide a valid username.");
+        return;
+      }
+
+      // Password Validation
+      if (!this.isValidPassword(password)) {
+        reject("Your new password must be valid.");
+        return;
+      }
+
+      // Answer validation
+      if (!answers || answers.length < 2) {
+        reject("You must answer the two security questions assigned to this account.");
+        return;
+      }
+
+      for(let i = 0; i < answers.length; i++) {
+        answers[i] = this.getString(answers[i]);
+
+        // Ensure valid value is provided.
+        if (!answers[i] || answers[i].length === 0) {
+          reject(`Answer ${i} must be a valid`);
+          return;
+        }
+      }
+
+      // SQL Variables
+      let sql = `
+        SELECT
+          SecurityAnswerHashOne AS 'AnswerOne',
+          SecurityAnswerHashTwo AS 'AnswerTwo'
+        FROM Users
+        WHERE Username = ?
+      `;
+      let args = [username];
+
+      // Query the database and validate the questions
+      this.database.query(sql, args)
+        .then(result => {
+          // Ensure valid answers were provided
+          if(result.length !== 1 ||
+            !bcrypt.compareSync(answers[0], result[0].AnswerOne) ||
+            !bcrypt.compareSync(answers[1], result[0].AnswerTwo)) {
+            reject("Failed to change the password. Check the username and answers you provided.");
+          }
+          
+          // Update the password
+          sql = `UPDATE Users SET PasswordHash = ? WHERE Username = ?`;
+          args = [bcrypt.hashSync(password, 12), username];
+
+          // Update the database
+          this.database.query(sql, args)
+            .then(result => resolve({'success' : "Password successfully changed!"}))
+            .catch(error => reject(error));
+        })
+        .catch(error => reject(error));
     });
   }
 }
