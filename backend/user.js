@@ -538,8 +538,6 @@ class User {
         .catch(error => reject(error));
     });
   }
-
-  // TODO: Allow users to delete their own waypoints
 }
 
 module.exports = User;
