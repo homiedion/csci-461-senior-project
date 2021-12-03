@@ -34,7 +34,9 @@ app.get("/", serveIndex);
 app.get("/fetchAnimals", fetchAnimals);
 app.get("/fetchSecurityQuestions", fetchSecurityQuestions);
 app.get("/fetchUserSecurityQuestions", fetchUserSecurityQuestions);
+app.get("/fetchUserWaypoints", fetchUserWaypoints);
 app.get("/fetchWaypoints", fetchWaypoints);
+app.get("/insertWaypoint", insertWaypoint);
 app.get("/login", login);
 app.get("/logout", logout);
 app.get("/register", register);
@@ -124,6 +126,32 @@ function fetchUserSecurityQuestions(req, res) {
  ********************************************************************************/
 function fetchWaypoints(req, res) {
   database.fetchWaypoints(req)
+    .then( result => writeResult(res, result) )
+    .catch( error => writeError(res, error) );
+}
+
+/**
+ * Fetches the waypoints the current user owns
+ * req - The request from the client.
+ * res - The response to the client.
+ ********************************************************************************/
+function fetchUserWaypoints(req, res) {
+  users.fetchUserWaypoints(req)
+    .then( result => writeResult(res, result) )
+    .catch( error => writeError(res, error) );
+}
+
+/**
+ * Inserts a user waypoint into the database
+ * Expects the following request parameters:
+ *  • latitude
+ *  • longitude
+ *  • animal
+ * req - The request from the client.
+ * res - The response to the client.
+ ********************************************************************************/
+function insertWaypoint(req, res) {
+  users.insertWaypoint(req)
     .then( result => writeResult(res, result) )
     .catch( error => writeError(res, error) );
 }

@@ -404,6 +404,142 @@ class User {
         .catch(error => reject(error));
     });
   }
+
+  /**
+   * Returns how many waypoints in the database are owned by the user
+   * req - The request from the server.
+   ********************************************************************************/
+  fetchUserWaypoints(req) {
+    return new Promise((resolve, reject) => {
+      
+      // Variables
+      let user = this.getCurrentUser(req).user;
+
+      // User Validation
+      if (!user || user.id <= 0) {
+        reject("You must be logged in to use this function.");
+        return ;
+      }
+
+      // SQL Variables
+      let sql = `
+        SELECT
+          UserId,
+          Animals.Name AS 'Animal',
+          Animals.Icon AS 'Icon',
+          ST_X(Coordinate) AS 'Latitude',
+          ST_Y(Coordinate) AS 'Longitude',
+          MAX(7 - DATEDIFF(CURRENT_DATE, Datestamp), 0) As 'DaysRemaining'
+        FROM Waypoints
+        JOIN Animals ON Animals.Id = Waypoints.AnimalId
+        WHERE UserId = ?
+        ORDER BY 'DaysRemaining' ASC
+      `;
+      let args = [user.id];
+      
+      // Query the database
+      //Query the database
+      this.database.query(sql, args)
+        .then(results => {
+
+          let waypoints = [];
+
+          for(let i = 0; i < results.length; i++) {
+            waypoints.push({
+              "Id" : results[i].UserId,
+              "Animal" : {
+                "Name" : results[i].Animal,
+                "Icon" : results[i].Icon,
+              },
+              "Location" : {
+                "Latitude" : results[i].Latitude,
+                "Longitude" : results[i].Longitude
+              },
+              "DaysRemaining" : results[i].DaysRemaining
+            });
+          }
+          resolve({'waypoints': waypoints});
+        })
+        .catch(error => reject(error.sqlMessage));
+    });
+  }
+
+  /**
+   * Allows the user to insert a new waypoint.
+   * req - The request from the server.
+   ********************************************************************************/
+  insertWaypoint(req) {
+    return new Promise((resolve, reject) => {
+      
+      // Variables
+      let user = this.getCurrentUser(req).user;
+      let lat = req.query.latitude;
+      let lng = req.query.longitude;
+      let animalId = this.getInt(req.query.animalId);
+
+      // User Validation
+      if (!user || user.id <= 0) {
+        reject("You must be logged in to use this function.");
+        return;
+      }
+
+      // User Validation
+      if (!user || user.id <= 0) {
+        reject("You must be logged in to use this function.");
+        return ;
+      }
+
+      // Latitude validation
+      if (!lat || isNaN(lat)) {
+        reject("You must provide a numeric latitude.");
+        return;
+      }
+      lat = parseFloat(lat);
+
+      // Longitude validation
+      if (!lng || isNaN(lng)) {
+        reject("You must provide a numeric longitude.");
+        return;
+      }
+      lng = parseFloat(lng);
+
+      // Animal Id Validation
+      if (!animalId || animalId <= 0) {
+        reject("You must provide an animal id");
+        return;
+      }
+
+      //Fetch the user waypoints
+      this.fetchUserWaypoints(req)
+        .then(result => {
+          // User waypoint limit
+          if (result.waypoints.length >= 100) {
+            reject("You can only have 100 active waypoints at a time.");
+            return;
+          } 
+
+          // SQL Variables
+          let sql = `
+            INSERT INTO Waypoints(UserId, AnimalId, Coordinate, Datestamp) VALUES
+            (?, ?, Point(?,?), CURRENT_DATE())
+          `;
+          let args = [user.id, animalId, lat, lng];
+
+          // Insert a new waypoint
+          this.database.query(sql, args)
+            .then(result => {
+              resolve("Success");
+            })
+            .catch(error => {
+              if (error.code && error.code === 'ER_NO_REFERENCED_ROW_2') { reject("Please provide a valid animal id."); }
+              else { reject(error); }
+            });
+        })
+        .catch(error => reject(error));
+    });
+  }
+
+  // TODO: Allow users to delete their own waypoints
 }
 
 module.exports = User;
