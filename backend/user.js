@@ -429,7 +429,7 @@ class User {
           Animals.Icon AS 'Icon',
           ST_X(Coordinate) AS 'Latitude',
           ST_Y(Coordinate) AS 'Longitude',
-          MAX(7 - DATEDIFF(CURRENT_DATE, Datestamp), 0) As 'DaysRemaining'
+          7 - DATEDIFF(CURRENT_DATE(), Datestamp) AS 'DaysRemaining'
         FROM Waypoints
         JOIN Animals ON Animals.Id = Waypoints.AnimalId
         WHERE UserId = ?
@@ -512,7 +512,8 @@ class User {
       //Fetch the user waypoints
       this.fetchUserWaypoints(req)
         .then(result => {
-          // User waypoint limit
+
+          // Limit the user to 100 active waypoints at a time.
           if (result.waypoints.length >= 100) {
             reject("You can only have 100 active waypoints at a time.");
             return;
@@ -525,10 +526,10 @@ class User {
           `;
           let args = [user.id, animalId, lat, lng];
 
-          // Insert a new waypoint
+          // Insert the new waypoint into the database
           this.database.query(sql, args)
             .then(result => {
-              resolve("Success");
+              resolve({'success' : "You've successfully added a new waypoint."});
             })
             .catch(error => {
               if (error.code && error.code === 'ER_NO_REFERENCED_ROW_2') { reject("Please provide a valid animal id."); }
