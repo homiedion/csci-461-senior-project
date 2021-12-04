@@ -19,7 +19,7 @@ class User {
   }
 
   /**
-   * Logs a user into the application 
+   * Logs a user into the application
    * Expects the following request parameters:
    *  • username
    *  • password
@@ -253,7 +253,7 @@ class User {
 
     //Query the database
     return new Promise((resolve, reject) => {
-      
+
       //Ensure we've provided a username
       if (!username || username.length === 0) {
         reject("You must provide a username");
@@ -391,7 +391,7 @@ class User {
             !bcrypt.compareSync(answers[1], result[0].AnswerTwo)) {
             reject("Failed to change the password. Check the username and answers you provided.");
           }
-          
+
           // Update the password
           sql = `UPDATE Users SET PasswordHash = ? WHERE Username = ?`;
           args = [bcrypt.hashSync(password, 12), username];
@@ -411,7 +411,7 @@ class User {
    ********************************************************************************/
   fetchUserWaypoints(req) {
     return new Promise((resolve, reject) => {
-      
+
       // Variables
       let user = this.getCurrentUser(req).user;
 
@@ -436,7 +436,7 @@ class User {
         ORDER BY 'DaysRemaining' ASC
       `;
       let args = [user.id];
-      
+
       // Query the database
       //Query the database
       this.database.query(sql, args)
@@ -470,7 +470,7 @@ class User {
    ********************************************************************************/
   insertWaypoint(req) {
     return new Promise((resolve, reject) => {
-      
+
       // Variables
       let user = this.getCurrentUser(req).user;
       let lat = req.query.latitude;
@@ -516,7 +516,7 @@ class User {
           if (result.waypoints.length >= 100) {
             reject("You can only have 100 active waypoints at a time.");
             return;
-          } 
+          }
 
           // SQL Variables
           let sql = `

@@ -8,8 +8,24 @@ html {
   min-height: 250px;
 }
 
+#createMarkerDropdown{
+  min-height: 100px;
+}
+
+#createMarker {
+  height: 100px;
+  width: 200px;
+  float: right;
+  position: relative;
+}
+
 #login {
   margin-left: 75px;
+}
+
+#forgotPassword {
+  margin-top: 15px;
+  margin-left: 40px;
 }
 
 #register {
@@ -17,8 +33,10 @@ html {
 }
 
 .map {
-  height: 500px;
-  width: 100%;
+  height: 100vh;
+  width: 90%;
+  float: left;
+  position: fixed;
 }
 
 .ol-popup {

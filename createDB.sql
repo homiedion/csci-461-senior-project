@@ -2,7 +2,7 @@ DROP DATABASE IF EXISTS FluffleDB;
 CREATE DATABASE IF NOT EXISTS FluffleDB;
 use FluffleDB;
 
-/* 
+/*
  * Creates the security questions table
  *****************************************************************************/
 CREATE TABLE SecurityQuestions (
@@ -15,14 +15,14 @@ INSERT INTO SecurityQuestions(Question) VALUES
   ("What is your oldest sibling's middle name?"),
   ("What was the first concert you attended?"),
   ("What was the make and model of your first car?"),
-  ("In what city or two did your parents meet?"),
+  ("In what city or town did your parents meet?"),
   ("What was the first exam you failed?"),
   ("What was the name of your first stuffed animal?"),
   ("What is the middle name of your youngest child?"),
   ("Where were you when you had your first kiss?"),
   ("In what city or town did you meet your spouse/significant other?");
 
-/* 
+/*
  * Creates the user table
  *****************************************************************************/
 CREATE TABLE Users (
@@ -38,7 +38,7 @@ CREATE TABLE Users (
   FOREIGN KEY (SecurityQuestionTwo) REFERENCES SecurityQuestions(Id)
 );
 
-/* 
+/*
  * Creates the animal table
  *****************************************************************************/
 CREATE TABLE Animals (
@@ -76,7 +76,7 @@ INSERT INTO Animals(Name, Icon) VALUES
   ('Whale', './assets/icons/whale.png'),
   ('Wolf', './assets/icons/wolf.png');
 
-/* 
+/*
  * Creates the waypoints table
  *****************************************************************************/
 CREATE TABLE Waypoints (
@@ -89,7 +89,14 @@ CREATE TABLE Waypoints (
   FOREIGN KEY (AnimalId) REFERENCES Animals(Id)
 );
 
-/* 
+-- INSERT INTO Waypoints(UserId, AnimalId, Coordinate, Datestamp) VALUES
+-- ((SELECT Id FROM Users WHERE Username = "floyko"), (SELECT Id FROM Animals WHERE Name = "Bear"), Point(42.661804, -73.152981), DATE_SUB(CURRENT_DATE(), INTERVAL 15 DAY)),
+-- ((SELECT Id FROM Users WHERE Username = "floyko"), (SELECT Id FROM Animals WHERE Name = "Rabbit"), Point(42.708520, -73.1070), DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY)),
+-- ((SELECT Id FROM Users WHERE Username = "floyko"), (SELECT Id FROM Animals WHERE Name = "Cat"), Point(42.691801, -73.106160), CURRENT_DATE()),
+-- ((SELECT Id FROM Users WHERE Username = "floyko"), (SELECT Id FROM Animals WHERE Name = "Bear"), Point(42.680878, -73.113681), CURRENT_DATE())
+-- ;
+
+/*
  * Creates an event that automatically purges waypoints that exceed a certain
  * age.
  *****************************************************************************/

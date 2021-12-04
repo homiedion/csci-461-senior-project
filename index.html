@@ -36,7 +36,7 @@
         <!-- Navigation Elements -->
         <ul class="navbar-nav mr-auto">
           <!-- Home -->
-          <li class="nav-item">
+          <li class="nav-item" id="home-button">
             <a class="nav-link" href="#">Home</a>
           </li>
 
@@ -48,6 +48,7 @@
 
         <!-- User Elements -->
         <ul class="navbar-nav ml-auto">
+
           <!-- Register -->
           <li class="nav-item unauthenticated-element" id="map-button">
             <a class="nav-link" href="#" data-toggle="modal" href="#register-modal" data-target="#register-modal" id="register">Register</a>
@@ -69,6 +70,7 @@
                   <input type="password" class="form-control" id="login-password" placeholder="Password">
                 </div>
                 <button type="button" class="btn btn-primary" id="login">Sign In</button>
+                <button type="button" class="btn btn-secondary" id="forgotPassword">Forgot Password</button>
               </form>
               <pre id="login-error"></pre>
             </div>
@@ -103,6 +105,18 @@
               <div class="form-group">
                 <input type="password" class="form-control" id="register-password" name="register-password" placeholder="Password">
               </div>
+              <label for="question-one">Question One</label>
+              <select class="form-control" id="question-one"></select>
+              <div class="form-group">
+                <input type="text" class="form-control" id="answer-one" name="answer-one"
+                  placeholder="Answer One">
+              </div>
+              <label for="question-two">Question Two</label>
+              <select class="form-control" id="question-two"></select>
+              <div class="form-group">
+                <input type="text" class="form-control" id="answer-two" name="answer-two"
+                  placeholder="Answer Two">
+              </div>
             </form>
             <pre id="register-error"></pre>
           </div>
@@ -114,8 +128,59 @@
       </div>
     </div>
 
+    <!-- security/reset password modal -->
+    <div id="security-modal" class="modal" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content reg">
+          <div class="modal-header">
+            <h5 class="modal-title">Security Questions</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body bg-dark text-white">
+            <form>
+              <div class="form-group">
+                <p id ="modal-question-one"></p>
+                <input type="text" class="form-control" id="modal-answer-one" name="modal-answer-one" placeholder="Answer">
+              </div>
+              <div class="form-group">
+                <p id ="modal-question-two"></p>
+                <input type="text" class="form-control" id="modal-answer-two" name="modal-answer-two" placeholder="Answer">
+              </div>
+              <div class="form-group">
+                <p>Please enter new password</p>
+                <input type="password" class="form-control" id="password-text" name="password-text" placeholder="Password">
+              </div>
+            </form>
+            <p id="security-question-error"></p>
+          </div>
+          <div class="modal-footer">
+            <button id="submit-answers-button" type="button" class="btn btn-primary">Submit</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Map -->
     <div id="map" class="map"></div>
+
+    <form class="px-4 py-3 authenticated-element" id="createMarker">
+      <div class="form-group">
+        <label for="animals">Choose an animal:</label>
+        <select name="animals" id="animals"></select>
+      </div>
+      <div class="form-group">
+        <label for="latitude">Latitude:</label>
+        <input type="text" class="form-control" id="latitude">
+      </div>
+      <div class="form-group">
+        <label for="longitude">Longitude:</label>
+        <input type="text" class="form-control" id="longitude">
+      </div>
+      <button type="button" class="btn btn-primary" id="createMarkerButton">Submit Marker</button>
+    </form>
 
     <div id="popup" class="ol-popup">
         <a href="#" id="popup-closer" class="ol-popup-closer"></a>

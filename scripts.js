@@ -13,6 +13,8 @@ $(document).ready(function() {
     model.user = null;
     model.map = null;
     model.results = {};
+    model.questionOne = "";
+    model.questionTwo = "";
   }
 
   /*
@@ -34,6 +36,55 @@ $(document).ready(function() {
       $(".authenticated-element").hide();
       $(".unauthenticated-element").show();
     }
+
+    if(model.map && model.user)
+    {
+      $("#createMarker").show();
+      model.map.on("singleclick", function(event)
+      {
+        let coordinate = ol.proj.transform(event.coordinate, "EPSG:3857", "EPSG:4326");
+        $("#longitude").val(coordinate[0]);
+        $("#latitude").val(coordinate[1]);
+      });
+    }
+    else
+      $("#createMarker").hide();
+
+    $("#question-one").empty();
+    $("#question-two").empty();
+    for (let question in model.securityQuestions)
+    {
+      let questionOneOption = $("<option></option>");
+      let questionTwoOption = $("<option></option>");
+      questionOneOption.attr("value", model.securityQuestions[question].Id);
+      questionOneOption.text(model.securityQuestions[question].Question);
+      questionTwoOption.attr("value", model.securityQuestions[question].Id);
+      questionTwoOption.text(model.securityQuestions[question].Question);
+
+      if (question == 0)
+      {
+        questionOneOption.attr("selected", true);
+        questionTwoOption.attr("disabled", true);
+      }
+      if (question == 1)
+      {
+        questionOneOption.attr("disabled", true);
+        questionTwoOption.attr("selected", true);
+      }
+
+      $("#question-one").append(questionOneOption);
+      $("#question-two").append(questionTwoOption);
+    }
+
+    $("#animals").empty();
+    for(let animal in model.results.animals)
+    {
+      let animalOption = $("<option></option>");
+      animalOption.attr("value", model.results.animals[animal].Id);
+      animalOption.text(model.results.animals[animal].Name);
+
+      $("#animals").append(animalOption);
+    }
   }
 
   /*
@@ -48,15 +99,20 @@ $(document).ready(function() {
 
     //Send the request
     jqxhr.done(function(json) {
-      if(json.error !== undefined)
-        model.error = json.error;
-      if(json.user !== undefined)
-        model.user = json.user;
-      if(json.result !== undefined)
-        model.results = json.result;
-      if(json.waypoints !== undefined)
-        model.results.waypoints = json.waypoints;
+      if(json.error !== undefined) {model.error = json.error;}
+      if(json.user !== undefined) {model.user = json.user;}
+      if(json.securityQuestions !== undefined) {model.securityQuestions = json.securityQuestions;}
+      if(json.userQuestions !== undefined) {model.results.userQuestions = json.userQuestions;}
+      if(json.result !== undefined) {model.results = json.result;}
+      if(json.waypoints !== undefined) {model.results.waypoints = json.waypoints;}
+      if(json.animals !== undefined) {model.results.animals = json.animals;}
       if(callback !== undefined) { callback(); }
+
+      model.questionOne = json.questionOne;
+      model.questionTwo = json.questionTwo;
+      model.answerOne = json.answerOne;
+      model.answerTwo = json.answerTwo;
+
       updateView();
     });
 
@@ -75,8 +131,14 @@ $(document).ready(function() {
     let email = $("#register-email").val().trim();
     let username = $("#register-username").val().trim();
     let password = $("#register-password").val().trim();
+    let questions = [$("#question-one").val(), $("#question-two").val()];
+    let answers = [$("#answer-one").val().toLowerCase().trim(), $("#answer-two").val().toLowerCase().trim()];
 
-    sendRequest("register?email=" + email + "&username=" + username + "&password=" + password);
+    let url = `register?email=${email}&username=${username}&password=${password}`;
+    for(let i = 0; i < questions.length; i++) { url += `&questions[]=${questions[i]}`; }
+    for(let i = 0; i < answers.length; i++) { url += `&answers[]=${answers[i]}`; }
+    sendRequest(url);
+
     $("#register-modal").modal("hide");
   });
 
@@ -97,6 +159,64 @@ $(document).ready(function() {
    ********************************************************************************/
   $("#logout").click(function() {
       sendRequest("logout");
+  });
+
+  $("#register-button").click(function()
+  {
+    $("#register-email").val("");
+    $("#register-username").val("");
+    $("#register-password").val("");
+    $("#answer-one").val("");
+    $("#answer-two").val("");
+    $("#register-error").empty();
+    $("#register-modal").modal("show");
+  });
+
+  $("#login").click(function()
+  {
+    $("#login-username").val("");
+    $("#login-password").val("");
+    $("#login-error").empty();
+  });
+
+  $("#forgotPassword").click(function()
+  {
+    $("#login-error").empty();
+    let username = $("#login-username").val().trim();
+
+    sendRequest("fetchUserSecurityQuestions?username=" + username, function ()
+    {
+      if (model.loginError == undefined || model.loginError == "")
+      {
+        $("#modal-question-one").text(model.results.userQuestions[0]);
+        $("#modal-question-two").text(model.results.userQuestions[1]);
+        $("#login-modal").modal("hide");
+        $("#security-modal").modal("show");
+        model.email = email;
+      }
+      else
+        $("#login-error").text(model.loginError);
+    });
+  });
+
+  $("#submit-answers-button").click(function()
+  {
+    $("#security-question-error").empty();
+    let username = $("#login-username").val().trim();
+    let password = $("#password-text").val().trim();
+    let answers = [$("#modal-answer-one").val().toLowerCase().trim(), $("#modal-answer-two").val().toLowerCase().trim()];
+    sendRequest("resetPassword?username=" + username + "&password=" + password + "&answers[]=" + answers[0] + "&answers[]=" + answers[1], function ()
+    {
+      if (model.securityQuestionError == undefined || model.securityQuestionError == "")
+      {
+        $("#password-text").val("");
+        $("#modal-answer-one").val("");
+        $("#modal-answer-two").val("");
+        $("#security-modal").modal("hide");
+      }
+      else
+        $("#security-question-error").text(model.securityQuestionError);
+    });
   });
 
   /*
@@ -260,9 +380,26 @@ $(document).ready(function() {
     initilizePopUp();
   }
 
+  // insert waypoint into database
+  $("#createMarkerButton").click(function()
+  {
+    let animal = $("#animals").val().trim();
+    let latitude = $("#latitude").val().trim();
+    let longitude = $("#longitude").val().trim();
+
+    sendRequest("insertWaypoint?latitude=" + latitude + "&longitude=" + longitude + "&animalId=" + animal, function()
+    {
+      $("#latitude").val("");
+      $("#longitude").val("");
+    });
+    getWayPoints();
+  });
+
   /*
    * Once everything is setup initialize the model and update the view
    ********************************************************************************/
   initializeModel();
   sendRequest("whoIsLoggedIn");
+  sendRequest("fetchAnimals");
+  sendRequest("fetchSecurityQuestions");
 });
