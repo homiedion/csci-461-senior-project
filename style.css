@@ -5,11 +5,7 @@ html {
 
 .dropdown-menu {
   min-width: 275px;
-  min-height: 250px;
-}
-
-#createMarkerDropdown{
-  min-height: 100px;
+  height: 330px;
 }
 
 #createMarker {
@@ -30,6 +26,10 @@ html {
 
 #register {
   text-align: center;
+}
+
+#error {
+  color: crimson;
 }
 
 #nav-welcome {

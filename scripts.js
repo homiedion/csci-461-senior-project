@@ -50,6 +50,8 @@ $(document).ready(function() {
     else
       $("#createMarker").hide();
 
+    $("#popup").hide();
+
     $("#question-one").empty();
     $("#question-two").empty();
     for (let question in model.securityQuestions)
@@ -127,7 +129,6 @@ $(document).ready(function() {
    * Register Button Click
    ********************************************************************************/
   $("#register-button").click(function() {
-    $("#register-error").empty();
     let email = $("#register-email").val().trim();
     let username = $("#register-username").val().trim();
     let password = $("#register-password").val().trim();
@@ -146,7 +147,6 @@ $(document).ready(function() {
    * Login Button Click
    ********************************************************************************/
   $("#login").click(function() {
-    $("#login-error").empty();
     let username = $("#login-username").val().trim();
     let password = $("#login-password").val().trim();
 
@@ -168,7 +168,6 @@ $(document).ready(function() {
     $("#register-password").val("");
     $("#answer-one").val("");
     $("#answer-two").val("");
-    $("#register-error").empty();
     $("#register-modal").modal("show");
   });
 
@@ -176,46 +175,44 @@ $(document).ready(function() {
   {
     $("#login-username").val("");
     $("#login-password").val("");
-    $("#login-error").empty();
   });
 
   $("#forgotPassword").click(function()
   {
-    $("#login-error").empty();
     let username = $("#login-username").val().trim();
 
     sendRequest("fetchUserSecurityQuestions?username=" + username, function ()
     {
-      if (model.loginError == undefined || model.loginError == "")
+      if (model.error == undefined || model.error == "")
       {
         $("#modal-question-one").text(model.results.userQuestions[0]);
         $("#modal-question-two").text(model.results.userQuestions[1]);
         $("#login-modal").modal("hide");
+        $("#security-success").text("");
         $("#security-modal").modal("show");
-        model.email = email;
       }
       else
-        $("#login-error").text(model.loginError);
+        $("#error").text(model.error);
     });
   });
 
   $("#submit-answers-button").click(function()
   {
-    $("#security-question-error").empty();
     let username = $("#login-username").val().trim();
     let password = $("#password-text").val().trim();
     let answers = [$("#modal-answer-one").val().toLowerCase().trim(), $("#modal-answer-two").val().toLowerCase().trim()];
     sendRequest("resetPassword?username=" + username + "&password=" + password + "&answers[]=" + answers[0] + "&answers[]=" + answers[1], function ()
     {
-      if (model.securityQuestionError == undefined || model.securityQuestionError == "")
+      if (model.error == undefined || model.error == "")
       {
+        $("#login-username").val("");
         $("#password-text").val("");
         $("#modal-answer-one").val("");
         $("#modal-answer-two").val("");
-        $("#security-modal").modal("hide");
+        $("#security-success").text("Successfully Changed Password");
       }
       else
-        $("#security-question-error").text(model.securityQuestionError);
+        $("#error").text(model.error);
     });
   });
 
@@ -333,6 +330,7 @@ $(document).ready(function() {
 
    model.map.on("singleclick", function (event)
    {
+     $("#popup").show();
      let layer;
      let feature = model.map.forEachFeatureAtPixel(event.pixel, function(feature){
        return feature;
