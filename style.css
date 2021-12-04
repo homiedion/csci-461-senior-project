@@ -28,10 +28,6 @@ html {
   text-align: center;
 }
 
-#error {
-  color: crimson;
-}
-
 #nav-welcome {
   padding-right: 5px;
   border-right: 1px solid grey;

@@ -23,8 +23,7 @@ $(document).ready(function() {
   function updateView() {
 
     // Display Errors
-    $("#error").empty();
-    if(model.error) { $("#error").text(model.error); }
+    if(model.error) { alert(model.error); }
 
     // Alters the display based on if the user is authenticated.
     if(model.user) {
