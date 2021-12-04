@@ -27,6 +27,7 @@ $(document).ready(function() {
 
     // Alters the display based on if the user is authenticated.
     if(model.user) {
+      showMap();
       $(".authenticated-element").show();
       $(".unauthenticated-element").hide();
       $("#nav-welcome").text(`Hello ${model.user.username}`);
@@ -36,18 +37,13 @@ $(document).ready(function() {
       $(".unauthenticated-element").show();
     }
 
-    if(model.map && model.user)
-    {
-      $("#createMarker").show();
-      model.map.on("singleclick", function(event)
-      {
+    if(model.map && model.user) {
+      model.map.on("singleclick", function(event) {
         let coordinate = ol.proj.transform(event.coordinate, "EPSG:3857", "EPSG:4326");
         $("#longitude").val(coordinate[0]);
         $("#latitude").val(coordinate[1]);
       });
     }
-    else
-      $("#createMarker").hide();
 
     $("#popup").hide();
 
@@ -216,19 +212,6 @@ $(document).ready(function() {
   });
 
   /*
-   * Map Navigation Button Click
-   * TODO: Consider using promises or callbacks when adding markers.
-   * TODO: Fetch waypoints from the database and display them.
-   *       We might need to use the callback function of sendRequest(url, callback)
-   *       to display the map once the request is finished
-   *
-   * TODO: When the map moves/updates we need to fetch the waypoints again and display them.
-   ********************************************************************************/
-  $("#map-button").click(function() {
-    if (!model.map) { showMap(); }
-  });
-
-  /*
    * Initializes the map around the provided coordinates.
    * coords - An array containing the longitude and latitude
    */
@@ -264,7 +247,6 @@ $(document).ready(function() {
           },
           error => {
             model.error = "" + error.message;
-            updateView();
             initMap(defaultCoordinates);
           }
         );
@@ -272,7 +254,6 @@ $(document).ready(function() {
 
     else {
       model.error = "Your browser does not support geolocation services";
-      updateView();
       initMap(defaultCoordinates);
     }
   }

@@ -33,19 +33,6 @@
 
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
-        <!-- Navigation Elements -->
-        <ul class="navbar-nav mr-auto">
-          <!-- Home -->
-          <li class="nav-item" id="home-button">
-            <a class="nav-link" href="#">Home</a>
-          </li>
-
-          <!-- Map -->
-          <li class="nav-item" id="map-button">
-            <a class="nav-link" href="#">Map</a>
-          </li>
-        </ul>
-
         <!-- User Elements -->
         <ul class="navbar-nav ml-auto">
 
@@ -167,9 +154,21 @@
       </div>
     </div>
 
-    <!-- Map -->
-    <div id="map" class="map"></div>
+    <!-- Splash Page -->
+    <div class="unauthenticated-element container-fluid d-flex flex-column">
+      <div class="row bg-light flex-fill d-flex justify-content-start">
+        <div class="col"></div>
+          <div id="splash-content" class="col col-lg-8">
+            <h1>Welcome</h1>
+            <p>Welcome to Fluffle, a webapp that allows users to view and geotag tag the locations of animals. </p>
+          </div>
+        <div class="col"></div>
+      </div>
 
+    <!-- Map -->
+    <div id="map" class="map authenticated-element"></div>
+
+    <!-- Create Market -->
     <form class="px-4 py-3 authenticated-element" id="createMarker">
       <div class="form-group">
         <label for="animals">Choose an animal:</label>
@@ -186,10 +185,10 @@
       <button type="button" class="btn btn-primary" id="createMarkerButton">Submit Marker</button>
     </form>
 
+    <!-- Popup -->
     <div id="popup" class="ol-popup">
-        <a href="#" id="popup-closer" class="ol-popup-closer"></a>
-        <div id="popup-content">
-        </div>
+      <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+      <div id="popup-content"></div>
     </div>
 
   </body>
