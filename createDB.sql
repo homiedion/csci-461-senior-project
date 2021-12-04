@@ -57,7 +57,7 @@ INSERT INTO Animals(Name, Icon) VALUES
   ('Cow', './assets/icons/cow.png'),
   ('Crab', './assets/icons/crab.png'),
   ('Deer', './assets/icons/deer.png'),
-  ('Dog', './assets/icons/dogs.png'),
+  ('Dog', './assets/icons/dog.png'),
   ('Dolphin', './assets/icons/dolphin.png'),
   ('Fox', './assets/icons/fox.png'),
   ('Frog', './assets/icons/frog.png'),
