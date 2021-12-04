@@ -466,6 +466,10 @@ class User {
 
   /**
    * Allows the user to insert a new waypoint.
+   * Expects the following request parameters:
+   *  • lat
+   *  • lng
+   *  • animalId
    * req - The request from the server.
    ********************************************************************************/
   insertWaypoint(req) {
