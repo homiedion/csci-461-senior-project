@@ -23,14 +23,14 @@ $(document).ready(function() {
   function updateView() {
 
     // Display Errors
-    if(model.error) {
-      $("#error").text(model.error);
-    }
+    $("#error").empty();
+    if(model.error) { $("#error").text(model.error); }
 
     // Alters the display based on if the user is authenticated.
     if(model.user) {
       $(".authenticated-element").show();
       $(".unauthenticated-element").hide();
+      $("#nav-welcome").text(`Hello ${model.user.username}`);
     }
     else {
       $(".authenticated-element").hide();
@@ -99,7 +99,7 @@ $(document).ready(function() {
 
     //Send the request
     jqxhr.done(function(json) {
-      if(json.error !== undefined) {model.error = json.error;}
+      if(json.error !== undefined) {model.error = json.error;} else { model.error = ""; }
       if(json.user !== undefined) {model.user = json.user;}
       if(json.securityQuestions !== undefined) {model.securityQuestions = json.securityQuestions;}
       if(json.userQuestions !== undefined) {model.results.userQuestions = json.userQuestions;}
