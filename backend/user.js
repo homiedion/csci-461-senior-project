@@ -438,7 +438,6 @@ class User {
       let args = [user.id];
       
       // Query the database
-      //Query the database
       this.database.query(sql, args)
         .then(results => {
 
@@ -455,12 +454,12 @@ class User {
                 "Latitude" : results[i].Latitude,
                 "Longitude" : results[i].Longitude
               },
-              "DaysRemaining" : results[i].DaysRemaining
+              "DaysRemaining" : Math.max(results[i].DaysRemaining, 0)
             });
           }
           resolve({'waypoints': waypoints});
         })
-        .catch(error => reject(error.sqlMessage));
+        .catch(error => reject(error));
     });
   }
 
