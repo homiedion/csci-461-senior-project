@@ -21,7 +21,8 @@
     <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.9.0/build/ol.js"></script>
 
     <!-- External JS -->
-    <script src="scripts.js" type="text/javascript"></script>
+    <!--script src="scripts.js" type="text/javascript"></script -->
+    <script src="script.js" type="text/javascript"></script>
   </head>
   <body>
     <!-- Navbar -->
@@ -112,7 +113,7 @@
             </form>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary" id="register-button">Register</button>
+            <button type="button" class="btn btn-primary" id="register-submit-button">Register</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
           </div>
         </div>
@@ -155,20 +156,15 @@
     </div>
 
     <!-- Splash Page -->
-    <div class="unauthenticated-element container-fluid d-flex flex-column">
-      <div class="row bg-light flex-fill d-flex justify-content-start">
-        <div class="col"></div>
-          <div id="splash-content" class="col col-lg-8">
-            <h1>Welcome</h1>
-            <p>Welcome to Fluffle, a webapp that allows users to view and geotag tag the locations of animals. </p>
-          </div>
-        <div class="col"></div>
-      </div>
+    <div class="unauthenticated-element">
+      <h1>Welcome</h1>
+      <p>Welcome to Fluffle, a webapp that allows users to view and geotag tag the locations of animals. </p>
+    </div>
 
     <!-- Map -->
     <div id="map" class="map authenticated-element"></div>
 
-    <!-- Create Market -->
+    <!-- Create Marker -->
     <form class="px-4 py-3 authenticated-element" id="createMarker">
       <div class="form-group">
         <label for="animals">Choose an animal:</label>
