@@ -263,7 +263,6 @@ function getWaypoints() {
   });
 }
 
-
 /*
  * Creates a marker on the map with the given coordinates
  * waypoint - A waypoint to be displayed
@@ -272,7 +271,6 @@ function createWaypoint(waypoint) {
 
   // Variables
   let coords = [waypoint.Location.Longitude, waypoint.Location.Latitude];
-  console.log(waypoint);
   let content = `
     <b>Seen by:</b> ${waypoint.User}<br/>
     <b>Animal:</b> ${waypoint.Animal.Name}<br/>
