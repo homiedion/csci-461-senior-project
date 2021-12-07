@@ -6,11 +6,38 @@ html {
 
 body {
   height: 100%;
+  background-color: #818380;
+  font-family: 'Cabin', sans-serif;
+}
+
+footer {
+  text-align: center;
+  background-color: black;
+  color: white;
+}
+
+.modal-body {
+  background-color: #FAEBD7;
+}
+
+.form-control, #animals, #question-one, #question-two {
+  background-color: #F7E7CE;
+  border: solid black 0.5px;
+}
+
+.navbar {
+  background-color: black;
 }
 
 .dropdown-menu {
   min-width: 275px;
   height: 330px;
+  background-color: #FAEBD7;
+}
+
+.images {
+  text-align: center;
+  padding-bottom: 10px;
 }
 
 #createMarker {
@@ -18,10 +45,10 @@ body {
   width: 200px;
   float: right;
   position: relative;
+  background-color: #818380;
 }
 
 #splash-content {
-  background-color: grey;
   padding: 5px;
 }
 
@@ -41,6 +68,30 @@ body {
 #nav-welcome {
   padding-right: 5px;
   border-right: 1px solid grey;
+  color: white;
+}
+
+#welcome-splash {
+  text-align: center;
+
+}
+
+#paragraph-splash {
+  text-align: center;
+  font-size: 20px;
+}
+
+.close {
+  color: white;
+}
+
+.modal-header {
+  background-color: black;
+  color: white;
+}
+
+.modal-footer {
+  background-color: black;
 }
 
 .map {
@@ -52,11 +103,11 @@ body {
 
 .ol-popup {
   position: absolute;
-  background-color: white;
+  background-color: #4CB5F5;
   box-shadow: 0 1px 4px rgba(0,0,0,0.2);
   padding: 15px;
   border-radius: 10px;
-  border: 1px solid #cccccc;
+  border: 1px solid black;
   bottom: 12px;
   left: -50px;
   min-width: 280px;
@@ -73,7 +124,7 @@ body {
 }
 
 .ol-popup:after {
-  border-top-color: white;
+  border-top-color: black;
   border-width: 10px;
   left: 48px;
   margin-left: -10px;

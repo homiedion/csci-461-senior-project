@@ -9,6 +9,9 @@
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" type="text/css"> -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cabin&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.9.0/css/ol.css" type="text/css">
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
@@ -26,7 +29,7 @@
   </head>
   <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark">
       <a class="navbar-brand" href="#">Fluffle</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -87,7 +90,7 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div class="modal-body bg-dark text-white">
+          <div class="modal-body">
             <form>
               <div class="form-group">
                 <input type="text" class="form-control" id="register-email" name="register-email" placeholder="Email">
@@ -123,14 +126,14 @@
     <!-- security/reset password modal -->
     <div id="security-modal" class="modal" tabindex="-1" role="dialog">
       <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content reg">
+        <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">Security Questions</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div class="modal-body bg-dark text-white">
+          <div class="modal-body">
             <form>
               <div class="form-group">
                 <p id ="modal-question-one"></p>
@@ -157,9 +160,17 @@
 
     <!-- Splash Page -->
     <div class="unauthenticated-element">
-      <h1>Welcome</h1>
-      <p>Welcome to Fluffle, a webapp that allows users to view and geotag tag the locations of animals. </p>
+      <h1 id="welcome-splash">Welcome</h1>
+      <p id="paragraph-splash">Welcome to Fluffle, a webapp that allows users to view and geotag tag the locations of animals. </p>
+
+      <div class="images">
+      <div style="float:left;"><img src="./assets/images/ant-COLLAGE.jpg" alt="Collage 1" width="450" height="450"></div>
+      <img src="./assets/images/cow-COLLAGE.jpg" alt="Collage 2" width="450" height="450">
+      <div style="float:right;"><img src="./assets/images/lion-COLLAGE.jpg" alt="Collage 3" width="450" height="450"></div>
+      </div>
+      <div style="text-align:center;"><img src="./assets/images/map.png" alt="Map" width="800" height="405"></div>
     </div>
+
 
     <!-- Map -->
     <div id="map" class="map authenticated-element"></div>
@@ -186,6 +197,9 @@
       <a href="#" id="popup-closer" class="ol-popup-closer"></a>
       <div id="popup-content"></div>
     </div>
-
+    <footer>
+      Created By: Alex Dion & Faith Loyko<br>
+      &copy; 2021
+    </footer>
   </body>
 </html>

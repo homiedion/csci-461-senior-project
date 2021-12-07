@@ -1,4 +1,4 @@
-/* 
+/*
  * Variables
  *****************************************************************************/
 let model = {
@@ -9,7 +9,7 @@ let model = {
   'icons' : null,
 };
 
-/* 
+/*
  * Once everything is setup this function is run.
  *****************************************************************************/
 function init() {
@@ -19,7 +19,7 @@ function init() {
   updateView();
 }
 
-/* 
+/*
  * Updates the view based on the data stored within the model.
  *****************************************************************************/
 function updateView() {
@@ -41,7 +41,7 @@ function sendRequest(url, callback) {
 
   // Successful request
   jqxhr.done(json => {
-    
+
     // Catch any important data
     if (json.error !== undefined) { model.error = json.error; }
     if (json.user !== undefined) { model.user = json.user; }
@@ -58,7 +58,7 @@ function sendRequest(url, callback) {
   });
 }
 
-/* 
+/*
  * Alters the view based on whether or not the user is authenticated.
  *****************************************************************************/
 function displayAuthState() {
@@ -71,29 +71,30 @@ function displayAuthState() {
   else {
     $(".authenticated-element").hide();
     $(".unauthenticated-element").show();
+    $("#popup").hide();
     hideMap();
   }
 }
 
-/* 
+/*
  * Displays the possible security questions for registering users
  * json - The json provided by sendRequest()'s callback.
  *****************************************************************************/
 function updateSecurityQuestions(json) {
   // Exit if no questions provided
   if (!json.securityQuestions) { return; }
-  
+
   // Clear out the existing questions
   $("#question-one").empty();
   $("#question-two").empty();
 
   // Build the security questions available for registration.
   for(let i = 0; i < json.securityQuestions.length; i++) {
-    
+
     let question = json.securityQuestions[i];
     let q1 = $(`<option value=${question.Id}>${question.Question}</option>`);
     let q2 = $(`<option value=${question.Id}>${question.Question}</option>`);
-    
+
     if (i === 0) {
       q1.attr("selected", true);
       q2.attr("disabled", true);
@@ -108,7 +109,7 @@ function updateSecurityQuestions(json) {
   }
 }
 
-/* 
+/*
  * Displays the possible security questions for registering users
  * json - The json provided by sendRequest()'s callback.
  *****************************************************************************/
@@ -123,7 +124,7 @@ function updateAnimals(json) {
   }
 }
 
-/* 
+/*
  * Disables matching options between two selectors
  *****************************************************************************/
 function disableMatchingOption(source, target) {
@@ -134,19 +135,19 @@ function disableMatchingOption(source, target) {
   });
 }
 
-/* 
+/*
  * Displays an error on the view
  *****************************************************************************/
 function displayError(error) {
   alert(error);
 }
 
-/* 
+/*
  * Initializes the map within the model.
  * coords - An array that represents the coordinates [Lng, Lat]
  *****************************************************************************/
 function initMap(coords) {
-  
+
   // Variables
   let container = document.getElementById("popup");
   let closer = document.getElementById("popup-closer");
@@ -242,7 +243,7 @@ function initMap(coords) {
   });
 }
 
-/* 
+/*
  * Fetches all waypoints from the database
  *****************************************************************************/
 function getWaypoints() {
@@ -265,7 +266,7 @@ function getWaypoints() {
 }
 
 
-/* 
+/*
  * Creates a marker on the map with the given coordinates
  * waypoint - A waypoint to be displayed
  *****************************************************************************/
@@ -301,11 +302,11 @@ function createWaypoint(waypoint) {
   icons.addFeature(iconFeature);
 }
 
-/* 
+/*
  * Reveals the map to the user.
  *****************************************************************************/
 function showMap() {
-  
+
   // Variables
   let defaultCoordinates = [-73.1087, 42.7009]; // North Adams
   let geo = window.navigator.geolocation;
@@ -327,7 +328,7 @@ function showMap() {
   );
 }
 
-/* 
+/*
  * Hides and uninitalizes the map
  *****************************************************************************/
 function hideMap() {
@@ -335,12 +336,12 @@ function hideMap() {
   $("#map").empty();
 }
 
-/* 
+/*
  * Triggers when the document is ready.
  *****************************************************************************/
 $(document).ready(function() {
 
-  /* 
+  /*
    * Register User Modal Functionality
    *****************************************************************************/
   // Ensure the modal is clean when displayed
@@ -412,7 +413,7 @@ $(document).ready(function() {
 
   // When question two changes prevent question one from selecting the same question.
   $("#question-two").change(function() {
-    disableMatchingOption("question-two", "question-one"); 
+    disableMatchingOption("question-two", "question-one");
   });
 
   /*
@@ -426,7 +427,7 @@ $(document).ready(function() {
 
     // Send a request to the server
     sendRequest(url, (json) => {
-      
+
       // Error handling
       if (json.error) {
         displayError(json.error);
@@ -450,7 +451,7 @@ $(document).ready(function() {
     let password = $("#password-text").val().trim();
     let answers = [$("#modal-answer-one").val().toLowerCase().trim(), $("#modal-answer-two").val().toLowerCase().trim()];
     let url = `resetPassword?username=${username}&password=${password}&answers[]=${answers[0]}&answers[]=${answers[1]}`;
-    
+
     // Send the request
     sendRequest(url, (json) => {
 
