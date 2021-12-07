@@ -402,6 +402,7 @@ $(document).ready(function() {
    ********************************************************************************/
   $("#logout").click(function() {
       sendRequest("logout", updateView);
+      location.reload();
   });
 
   /*

@@ -8,7 +8,6 @@
 
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" type="text/css"> -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cabin&display=swap" rel="stylesheet">
@@ -24,7 +23,6 @@
     <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.9.0/build/ol.js"></script>
 
     <!-- External JS -->
-    <!--script src="scripts.js" type="text/javascript"></script -->
     <script src="script.js" type="text/javascript"></script>
   </head>
   <body>
@@ -159,7 +157,7 @@
     </div>
 
     <!-- Splash Page -->
-    <div class="unauthenticated-element">
+    <div class="unauthenticated-element" style="padding-bottom: 10px;">
       <h1 id="welcome-splash">Welcome</h1>
       <p id="paragraph-splash">Welcome to Fluffle, a webapp that allows users to view and geotag tag the locations of animals. </p>
 
@@ -176,28 +174,30 @@
     <div id="map" class="map authenticated-element"></div>
 
     <!-- Create Marker -->
-    <form class="px-4 py-3 authenticated-element" id="createMarker">
-      <div class="form-group">
-        <label for="animals">Choose an animal:</label>
-        <select name="animals" id="animals"></select>
-      </div>
-      <div class="form-group">
-        <label for="latitude">Latitude:</label>
-        <input type="text" class="form-control" id="latitude">
-      </div>
-      <div class="form-group">
-        <label for="longitude">Longitude:</label>
-        <input type="text" class="form-control" id="longitude">
-      </div>
-      <button type="button" class="btn btn-primary" id="createMarkerButton">Submit Marker</button>
-    </form>
+    <div id="createMarker">
+      <form class="px-4 py-3 authenticated-element">
+        <div class="form-group">
+          <label for="animals">Choose an animal:</label>
+          <select name="animals" id="animals"></select>
+        </div>
+        <div class="form-group">
+          <label for="latitude">Latitude:</label>
+          <input type="text" class="form-control" id="latitude">
+        </div>
+        <div class="form-group">
+          <label for="longitude">Longitude:</label>
+          <input type="text" class="form-control" id="longitude">
+        </div>
+        <button type="button" class="btn btn-primary" id="createMarkerButton">Submit Marker</button>
+      </form>
+    </div>
 
     <!-- Popup -->
     <div id="popup" class="ol-popup">
       <a href="#" id="popup-closer" class="ol-popup-closer"></a>
       <div id="popup-content"></div>
     </div>
-    <footer>
+    <footer class="unauthenticated-element">
       Created By: Alex Dion & Faith Loyko<br>
       &copy; 2021
     </footer>
