@@ -41,7 +41,7 @@ footer {
 }
 
 #createMarker {
-  height: 100px;
+  height: calc(100% - 56px);
   width: 200px;
   float: right;
   position: relative;

@@ -5,7 +5,6 @@ let model = {
   'error' : "",
   'user' : null,
   'map' : null,
-  'waypoints' : null,
   'icons' : null,
 };
 
@@ -45,7 +44,6 @@ function sendRequest(url, callback) {
     // Catch any important data
     if (json.error !== undefined) { model.error = json.error; }
     if (json.user !== undefined) { model.user = json.user; }
-    if (json.waypoints !== undefined) { model.waypoints = json.waypoints; }
 
     // Trigger the optional callback
     if (callback) { callback(json); }
@@ -62,17 +60,17 @@ function sendRequest(url, callback) {
  * Alters the view based on whether or not the user is authenticated.
  *****************************************************************************/
 function displayAuthState() {
-  if(model.user) {
-    $(".authenticated-element").show();
-    $(".unauthenticated-element").hide();
-    $("#nav-welcome").text(`Hello ${model.user.username}`);
-    showMap();
-  }
-  else {
+  if(!model.user) {
     $(".authenticated-element").hide();
     $(".unauthenticated-element").show();
     $("#popup").hide();
     hideMap();
+  }
+  else {
+    $(".authenticated-element").show();
+    $(".unauthenticated-element").hide();
+    $("#nav-welcome").text(`Hello ${model.user.username}`);
+    showMap();
   }
 }
 
@@ -274,6 +272,7 @@ function createWaypoint(waypoint) {
 
   // Variables
   let coords = [waypoint.Location.Longitude, waypoint.Location.Latitude];
+  console.log(waypoint);
   let content = `
     <b>Seen by:</b> ${waypoint.User}<br/>
     <b>Animal:</b> ${waypoint.Animal.Name}<br/>
@@ -311,29 +310,33 @@ function showMap() {
   let defaultCoordinates = [-73.1087, 42.7009]; // North Adams
   let geo = window.navigator.geolocation;
 
-  // Return the default map if geolocation is not supported
-  if (!geo) {
-    initMap(defaultCoordinates);
-    displayError("This browser does not support Geolocation Services!");
-    return;
+  // Create the map if it doesn't exist
+  if (!model.map) {
+    // Return the default map if geolocation is not supported
+    if (!geo) {
+      initMap(defaultCoordinates);
+      displayError("This browser does not support Geolocation Services!");
+      return;
+    }
+
+    // Initialize and display the map
+    geo.getCurrentPosition(
+      geoPos => { initMap([geoPos.coords.longitude, geoPos.coords.latitude]); },
+      error => {
+        initMap(defaultCoordinates);
+        displayError(error.message);
+      }
+    );
   }
 
-  // Initialize and display the map
-  geo.getCurrentPosition(
-    geoPos => { initMap([geoPos.coords.longitude, geoPos.coords.latitude]); },
-    error => {
-      initMap(defaultCoordinates);
-      displayError(error.message);
-    }
-  );
+  $("#map").show();
 }
 
 /*
  * Hides and uninitalizes the map
  *****************************************************************************/
 function hideMap() {
-  model.map = null;
-  $("#map").empty();
+  $("#map").hide();
 }
 
 /*
