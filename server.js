@@ -176,9 +176,7 @@ function login(req, res) {
  * res - The response to the client.
  ********************************************************************************/
 function logout(req, res) {
-  users.logout(req)
-    .then( result => writeResult(res, result) )
-    .catch( error => writeError(res, error) );
+  writeResult(res, users.logout(req));
 }
 
 /**

@@ -42,10 +42,8 @@ class User {
    * req - The request from the client.
    ********************************************************************************/
   logout(req) {
-    return new Promise((resolve, reject) => {
-      req.session.user = null;
-      resolve({'user': null});
-    });
+    req.session.user = null;
+    return this.getCurrentUser(req);
   }
 
   /**
